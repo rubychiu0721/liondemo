@@ -1,11 +1,14 @@
 const app = document.querySelector("#app");
 
 function syncViewportHeight() {
-  document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+  const height = window.visualViewport?.height || window.innerHeight;
+  document.documentElement.style.setProperty("--app-height", `${height}px`);
 }
 
 syncViewportHeight();
 window.addEventListener("resize", syncViewportHeight);
+window.visualViewport?.addEventListener("resize", syncViewportHeight);
+window.visualViewport?.addEventListener("scroll", syncViewportHeight);
 window.addEventListener("orientationchange", () => window.setTimeout(syncViewportHeight, 250));
 
 const photoAssets = [

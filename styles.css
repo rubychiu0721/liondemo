@@ -10,7 +10,7 @@
   --yellow: #f2b900;
   --lavender: #8fa2ff;
   --shadow: 0 4px 14px rgba(25, 45, 80, 0.12);
-  --app-height: 100vh;
+  --app-height: 100dvh;
 }
 
 * {
@@ -21,7 +21,9 @@ html,
 body,
 #app {
   width: 100%;
-  height: 100%;
+  height: var(--app-height);
+  min-height: 0;
+  overflow: hidden;
 }
 
 body {
@@ -133,7 +135,8 @@ button {
 
 .main {
   grid-column: 2;
-  height: var(--app-height);
+  height: 100%;
+  min-height: 0;
   padding: 20px 24px 24px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -142,6 +145,8 @@ button {
 }
 
 .main-schedule {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -152,12 +157,16 @@ button {
 }
 
 .main-pets {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .main-detail {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -174,15 +183,31 @@ button {
 }
 
 .main-new-service {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .main-new-time {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.main-waiting {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-waiting .waiting-top {
+  flex: 0 0 auto;
 }
 
 .main-new-time > .page-head {
@@ -190,9 +215,12 @@ button {
 }
 
 .main-contract-flow {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-bottom: 0;
 }
 
 .main-contract-flow > .page-head {
@@ -216,6 +244,18 @@ button {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   padding: 0 2px 24px;
+}
+
+.day-grid,
+.waiting-day-grid,
+.pet-search-results,
+.service-scroll,
+.contract-card,
+.drawer,
+.main-detail .detail-grid > aside,
+.main-detail .content-stack,
+.main-new-time .booking-layout > aside {
+  touch-action: pan-y;
 }
 
 .main-new-time .confirm-wide {
@@ -404,9 +444,8 @@ button {
 }
 
 .schedule-panel {
-  height: calc(100vh - 136px);
-  height: calc(100dvh - 136px);
-  min-height: 560px;
+  height: 100%;
+  min-height: 0;
   padding: 24px 24px 0;
   overflow: hidden;
   position: relative;
@@ -766,9 +805,10 @@ button {
   display: grid;
   grid-template-columns: minmax(620px, 1fr) 368px;
   gap: 24px;
-  height: calc(100vh - 124px);
-  height: calc(100dvh - 124px);
+  flex: 1;
+  height: auto;
   min-height: 0;
+  overflow: hidden;
 }
 
 .waiting-schedule-panel {
@@ -891,8 +931,8 @@ button {
   right: 24px;
   z-index: 55;
   width: 368px;
-  height: calc(100vh - 136px);
-  height: calc(100dvh - 136px);
+  height: calc(var(--app-height) - 136px);
+  max-height: calc(var(--app-height) - 136px);
   background: #fff;
   box-shadow: -14px 0 32px rgba(25, 45, 80, 0.16);
   border-radius: 8px 8px 0 0;
@@ -991,7 +1031,7 @@ button {
 }
 
 .login-screen {
-  min-height: 100vh;
+  min-height: var(--app-height);
   display: grid;
   place-items: center;
   background:
@@ -1576,16 +1616,15 @@ button {
   display: grid;
   grid-template-columns: 368px 1fr;
   gap: 24px;
-  height: calc(100vh - 172px);
-  height: calc(100dvh - 172px);
+  height: auto;
   min-height: 0;
   overflow: hidden;
   align-items: start;
 }
 
 .pet-data-grid {
-  height: calc(100vh - 172px);
-  height: calc(100dvh - 172px);
+  height: auto;
+  min-height: 0;
 }
 
 .detail-grid > aside {
@@ -1752,12 +1791,12 @@ button {
 }
 
 .contract-card {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-height: 0;
   max-height: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 24px 26px;
+  padding: 24px 26px 32px;
   background: #fff;
   border-radius: 8px;
   box-shadow: var(--shadow);
@@ -1845,7 +1884,10 @@ button {
   display: flex;
   flex: 0 0 auto;
   justify-content: center;
-  padding: 16px 0 max(4px, env(safe-area-inset-bottom));
+  padding: 14px 0 max(18px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  position: relative;
+  z-index: 5;
 }
 
 .contract-next {
@@ -1925,7 +1967,7 @@ button {
 
 .info-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(230px, 1fr) minmax(300px, 1.2fr);
   align-items: center;
   gap: 24px;
 }
@@ -1948,10 +1990,16 @@ button {
 
 .toggle-row {
   display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  gap: 8px;
+  grid-template-columns: max-content 52px max-content;
+  gap: 12px;
   align-items: center;
   margin-bottom: 14px;
+}
+
+.toggle-row strong,
+.toggle-row span {
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .switch {
@@ -1981,10 +2029,14 @@ button {
   display: flex;
   align-items: center;
   gap: 4px;
+  width: 100%;
+  min-width: 0;
 }
 
 .bar {
-  width: 68px;
+  flex: 1 1 0;
+  min-width: 36px;
+  max-width: 68px;
   height: 16px;
   background: #eee;
 }
@@ -2396,6 +2448,99 @@ button {
   .waiting-list-panel,
   .pet-search-results {
     max-height: none;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 820px) {
+  .main {
+    padding: 16px 22px 18px;
+  }
+
+  .topbar,
+  .page-head,
+  .waiting-top {
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 14px;
+  }
+
+  .schedule-panel,
+  .waiting-schedule-panel {
+    padding: 20px 22px 0;
+  }
+
+  .section-title {
+    font-size: 22px;
+  }
+
+  .day-grid,
+  .waiting-day-grid {
+    height: calc(100% - 52px);
+  }
+
+  .time-rail,
+  .day-lane {
+    min-height: 660px;
+  }
+
+  .calendar-card {
+    padding: 22px 28px 26px;
+  }
+
+  .calendar-days {
+    row-gap: 13px;
+  }
+
+  .cal-day {
+    width: 40px;
+    height: 40px;
+  }
+
+  .calendar-legend {
+    margin: 14px 0 20px;
+  }
+
+  .slot-list {
+    gap: 12px;
+  }
+
+  .slot {
+    min-height: 54px;
+  }
+
+  .form-card {
+    padding: 20px 24px;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .main-new-service > .subhead {
+    margin: 18px 0 12px;
+  }
+
+  .pet-row {
+    min-height: 84px;
+    margin-bottom: 12px;
+  }
+
+  .service-row {
+    min-height: 102px;
+    margin-bottom: 12px;
+  }
+
+  .contract-card {
+    padding: 20px 24px 28px;
+  }
+
+  .contract-footer {
+    padding: 10px 0 max(14px, env(safe-area-inset-bottom));
+  }
+
+  .contract-next {
+    min-height: 56px;
   }
 }
 
