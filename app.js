@@ -691,11 +691,11 @@ function petHistoryRecords() {
   return `
     <h3>${icon("calendar")} 預約紀錄(24)</h3>
     <div class="record-list">
-      ${historyRow("✂", "大美容", "07/05 (四)　09:00", "已完成", "$1200", "tone-yellow")}
-      ${historyRow("♨", "小美容", "04/17 (六)　12:30", "已完成", "$1800", "tone-green")}
-      ${historyRow("▨", "客製化服務", "02/09 (四)　09:00", "已取消", "請到店評估", "tone-purple")}
-      ${historyRow("✂", "大美容", "02/05 (四)　09:00", "已完成", "$1200", "tone-yellow")}
-      ${historyRow("▨", "客製化服務", "02/09 (四)　09:00", "已完成", "$2000", "tone-purple")}
+      ${historyRow("large", "大美容", "07/05 (四)　09:00", "已完成", "$1200", "tone-yellow")}
+      ${historyRow("small", "小美容", "04/17 (六)　12:30", "已完成", "$1800", "tone-green")}
+      ${historyRow("custom", "客製化服務", "02/09 (四)　09:00", "已取消", "請到店評估", "tone-purple")}
+      ${historyRow("large", "大美容", "02/05 (四)　09:00", "已完成", "$1200", "tone-yellow")}
+      ${historyRow("custom", "客製化服務", "02/09 (四)　09:00", "已完成", "$2000", "tone-purple")}
     </div>
   `;
 }
@@ -703,7 +703,7 @@ function petHistoryRecords() {
 function historyRow(mark, service, date, status, price, tone) {
   return `
     <button class="history-row" data-detail="已完成">
-      <span class="service-icon ${tone}">${mark}</span>
+      ${serviceIcon(mark, tone)}
       <strong>${service}</strong>
       <span>${date}</span>
       <b>${status}</b>
@@ -836,7 +836,7 @@ function bookingInfo() {
   return `
     <div class="info-card">
       <h3>${icon("calendar")} 預約內容</h3>
-      <div class="info-row"><div style="display:flex; align-items:center; gap:18px;"><span class="service-icon tone-green">♨</span><strong>小美容</strong></div><div><strong style="color:var(--orange)">▣</strong>　2026/04/17 (五)<br><strong style="color:var(--orange)">${icon("clock")}</strong>　12:30~15:30</div></div>
+      <div class="info-row"><div style="display:flex; align-items:center; gap:18px;">${serviceIcon("small", "tone-green")}<strong>小美容</strong></div><div><strong style="color:var(--orange)">▣</strong>　2026/04/17 (五)<br><strong style="color:var(--orange)">${icon("clock")}</strong>　12:30~15:30</div></div>
     </div>
   `;
 }
