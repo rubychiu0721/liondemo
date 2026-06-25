@@ -1,5 +1,20 @@
 const app = document.querySelector("#app");
 
+function syncViewportHeight() {
+  document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+}
+
+syncViewportHeight();
+window.addEventListener("resize", syncViewportHeight);
+window.addEventListener("orientationchange", () => window.setTimeout(syncViewportHeight, 250));
+
+const photoAssets = [
+  "./assets/photo-dog-black.webp",
+  "./assets/photo-dog-white.jpg",
+  "./assets/photo-dog-lab.jpeg",
+  "./assets/photo-dog-closeup.png",
+];
+
 const state = {
   screen: "login",
   view: "day",
@@ -16,6 +31,7 @@ const state = {
   selectedSlot: "09:30",
   reportBaseFee: 1500,
   reportItems: [{ id: 1, item: "拆結費", amount: 300, note: "嚴重打結" }],
+  reportPhotos: [],
 };
 
 const statusMap = {
@@ -736,9 +752,10 @@ function contractHistoryRow(title, sub) {
 
 function contractFlowScreen() {
   const step = state.contractStep || 1;
+  const backScreen = state.contractBack || "pet-detail";
   return shell(`
     <div class="page-head fixed-detail-head contract-flow-head">
-      <div class="back-title"><button class="icon-btn" data-screen="pet-detail" data-pet-tab="contract">${icon("back")}</button>犬、貓美容服務定型化契約</div>
+      <div class="back-title"><button class="icon-btn" data-screen="${backScreen}" data-pet-tab="contract">${icon("back")}</button>犬、貓美容服務定型化契約</div>
       <div class="page-head-side">${headerMeta()}</div>
     </div>
     <section class="contract-card ${step === 4 ? "signature-card" : ""}">
@@ -747,9 +764,9 @@ function contractFlowScreen() {
     <div class="contract-footer">
       ${step < 4
         ? `<button class="primary-btn contract-next" data-contract-next>下一步 (${step}/4)　›</button>`
-        : `<button class="primary-btn contract-next" data-screen="pet-detail" data-pet-tab="contract">查看完畢　${icon("check")}</button>`}
+        : `<button class="primary-btn contract-next" data-screen="${backScreen}" data-pet-tab="contract">查看完畢　${icon("check")}</button>`}
     </div>
-  `, "pets");
+  `, "pets", "contract-flow");
 }
 
 function contractStepContent(step) {
@@ -887,15 +904,23 @@ function contractInfo(status) {
 }
 
 function contractRow(title, sub, on) {
-  return `<div class="contract-row"><span class="check-circle ${on ? "" : "off"}">${icon("check")}</span><span><strong>${title}</strong><br><span style="color:#888">${sub}</span></span><button class="arrow-square">›</button></div>`;
+  const openAttr = title === "主合約" ? "data-contract-open" : "";
+  return `<div class="contract-row"><span class="check-circle ${on ? "" : "off"}">${icon("check")}</span><span><strong>${title}</strong><br><span style="color:#888">${sub}</span></span><button class="arrow-square" ${openAttr}>›</button></div>`;
 }
 
 function quoteInfo(status) {
-  const photos = status === "waiting" ? "" : `<h3 style="margin-top:18px;">${icon("camera")} 影像記錄</h3><div class="photos"><span class="photo"></span><span class="photo"></span><span class="photo"></span><span class="photo"></span></div>`;
+  const photoList = photoAssets.map(src => `<span class="photo" style="background-image: url('${src}')"></span>`).join("");
+  const photos = status === "waiting" ? "" : `<h3 style="margin-top:18px;">${icon("camera")} 影像記錄</h3><div class="photos">${photoList}</div>`;
   const rows = state.reportItems.map(item => `<tr><td>${item.item}</td><td>${item.note}</td><td>NT$${item.amount}</td></tr>`).join("");
+  const action = status !== "done" && status !== "cancelled"
+    ? `<button class="outline-btn quote-edit-btn" data-screen="report" data-report-mode="quote">調整報價</button>`
+    : "";
   return `
     <div class="info-card">
-      <h3>${icon("message")} 計價 <span style="color:#999; font-size:14px; font-weight:500;">最後更新時間: yyyy/mm/dd HH:MM:SS</span>${status !== "done" && status !== "cancelled" ? `<button class="outline-btn" style="float:right;" data-screen="report" data-report-mode="quote">調整報價</button>` : ""}</h3>
+      <div class="quote-head">
+        <h3>${icon("message")} 計價 <span>最後更新時間: yyyy/mm/dd HH:MM:SS</span></h3>
+        ${action}
+      </div>
       <table class="quote-table">
         <thead><tr><th>項目</th><th>內容說明</th><th>費用</th></tr></thead>
         <tbody><tr><td>基礎服務</td><td>小美容</td><td>NT$${state.reportBaseFee}</td></tr>${rows}</tbody>
@@ -937,18 +962,20 @@ function reportItemRow(item, index) {
 }
 
 function reportContent() {
-  const photoBlock = state.reportMode === "quote"
-    ? `
-      <h2 class="subhead">${icon("camera")} 影像記錄 (3)</h2>
-      <div class="report-photos">
-        ${Array.from({ length: 4 }, () => `<span class="report-photo"><button class="photo-delete" aria-label="刪除照片"><img src="./assets/trash-icon.png" alt="" /></button></span>`).join("")}
-        <div class="camera-box">${icon("camera")}<br>點擊拍攝照片</div>
-      </div>
-    `
-    : `
-      <h2 class="subhead">${icon("camera")} 影像記錄 (0)</h2>
-      <div class="camera-box">${icon("camera")}<br>點擊拍攝照片</div>
-    `;
+  const photoCount = state.reportPhotos.length;
+  const photoItems = state.reportPhotos.map(photo => `
+    <span class="report-photo" style="background-image: url('${photo.src}')">
+      <button class="photo-delete" data-delete-report-photo="${photo.id}" aria-label="刪除照片"><img src="./assets/trash-icon.png" alt="" /></button>
+    </span>
+  `).join("");
+  const cameraButton = `<button class="camera-box" data-add-report-photo type="button">${icon("camera")}<br>點擊拍攝照片</button>`;
+  const photoBlock = `
+    <h2 class="subhead">${icon("camera")} 影像記錄 (${photoCount})</h2>
+    <div class="${photoCount ? "report-photos" : "empty-report-photos"}">
+      ${photoItems}
+      ${cameraButton}
+    </div>
+  `;
   return `
     <section class="report-card">
       <h3>${icon("message")} 計價_小美容</h3>
@@ -1083,7 +1110,7 @@ document.addEventListener("click", (event) => {
   }
   if (target.dataset.contractOpen !== undefined) {
     event.preventDefault();
-    setState({ screen: "contract-flow", contractStep: 1, petTab: "contract", drawer: false, modal: null });
+    setState({ screen: "contract-flow", contractStep: 1, petTab: "contract", contractBack: state.screen === "detail" ? "detail" : "pet-detail", drawer: false, modal: null });
   }
   if (target.dataset.contractNext !== undefined) {
     event.preventDefault();
@@ -1117,6 +1144,16 @@ document.addEventListener("click", (event) => {
   if (target.dataset.deleteReportItem) {
     const id = Number(target.dataset.deleteReportItem);
     state.reportItems = state.reportItems.filter(item => item.id !== id);
+    render();
+  }
+  if (target.dataset.addReportPhoto !== undefined) {
+    const src = photoAssets[state.reportPhotos.length % photoAssets.length];
+    state.reportPhotos.push({ id: Date.now(), src });
+    render();
+  }
+  if (target.dataset.deleteReportPhoto) {
+    const id = Number(target.dataset.deleteReportPhoto);
+    state.reportPhotos = state.reportPhotos.filter(photo => photo.id !== id);
     render();
   }
 });

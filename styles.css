@@ -10,10 +10,18 @@
   --yellow: #f2b900;
   --lavender: #8fa2ff;
   --shadow: 0 4px 14px rgba(25, 45, 80, 0.12);
+  --app-height: 100vh;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
 }
 
 body {
@@ -36,8 +44,7 @@ button {
 }
 
 .app-shell {
-  height: 100vh;
-  height: 100dvh;
+  height: var(--app-height);
   display: grid;
   grid-template-columns: 80px 1fr;
   background: var(--bg);
@@ -126,8 +133,7 @@ button {
 
 .main {
   grid-column: 2;
-  height: 100vh;
-  height: 100dvh;
+  height: var(--app-height);
   padding: 20px 24px 24px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -151,6 +157,22 @@ button {
   overflow: hidden;
 }
 
+.main-detail {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-detail > .page-head {
+  flex: 0 0 auto;
+}
+
+.main-detail > .detail-grid {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+
 .main-new-service {
   display: flex;
   flex-direction: column;
@@ -164,6 +186,16 @@ button {
 }
 
 .main-new-time > .page-head {
+  flex: 0 0 auto;
+}
+
+.main-contract-flow {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-contract-flow > .page-head {
   flex: 0 0 auto;
 }
 
@@ -420,6 +452,8 @@ button {
   color: #aaa;
   font-size: 16px;
   min-height: 690px;
+  overflow: visible;
+  z-index: 5;
 }
 
 .time-mark {
@@ -428,13 +462,32 @@ button {
 
 .now-marker {
   position: absolute;
-  top: 226px;
-  left: -15px;
-  padding: 2px 5px;
-  border-radius: 8px;
+  top: 222px;
+  left: -8px;
+  width: 66px;
+  height: 36px;
+  border-radius: 18px;
   color: #fff;
   background: var(--orange);
-  font-size: 13px;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 36px;
+  text-align: center;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.now-marker::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 58px;
+  width: 70px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--orange);
+  transform: translateY(-50%);
+  z-index: -1;
 }
 
 .day-lane {
@@ -457,6 +510,7 @@ button {
   background: var(--card-surface);
   overflow: hidden;
   text-align: left;
+  z-index: 1;
 }
 
 .appt.small {
@@ -509,6 +563,7 @@ button {
   --card-accent: #888;
   --card-surface: #f6f6f6;
   --chip-text: #fff;
+  z-index: 4;
 }
 
 .status-chip {
@@ -806,8 +861,6 @@ button {
   transform: translateY(-50%);
   width: 34px;
   height: 34px;
-  display: grid;
-  place-items: center;
   font-size: 28px;
   border: 0;
 }
@@ -1056,6 +1109,16 @@ button {
   margin: -20px -24px 26px;
   padding: 20px 24px 14px;
   background: var(--bg);
+  isolation: isolate;
+}
+
+.fixed-detail-head::before {
+  content: "";
+  position: absolute;
+  inset: -120px 0 0;
+  z-index: -1;
+  background: var(--bg);
+  pointer-events: none;
 }
 
 .contract-flow-head {
@@ -1689,8 +1752,9 @@ button {
 }
 
 .contract-card {
-  min-height: 625px;
-  max-height: calc(100dvh - 196px);
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 24px 26px;
@@ -1779,8 +1843,9 @@ button {
 
 .contract-footer {
   display: flex;
+  flex: 0 0 auto;
   justify-content: center;
-  padding-top: 16px;
+  padding: 16px 0 max(4px, env(safe-area-inset-bottom));
 }
 
 .contract-next {
@@ -1965,6 +2030,46 @@ button {
   color: #fff;
   background: var(--orange);
   font-size: 24px;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-indent: -1px;
+}
+
+.quote-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.quote-head h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.quote-head h3 span {
+  color: #999;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.quote-edit-btn {
+  flex: 0 0 auto;
+  height: 48px;
+  min-width: 132px;
+  padding: 0 22px;
+  border-color: var(--orange);
+  color: var(--orange);
+  background: #fff;
+  font-size: 18px;
 }
 
 .quote-table {
@@ -2000,7 +2105,7 @@ button {
 .photo {
   height: 96px;
   border-radius: 8px;
-  background: url("./assets/checkin-pet.jpeg") center / cover no-repeat;
+  background: url("./assets/photo-dog-black.webp") center / cover no-repeat;
   border: 2px solid #ddd;
 }
 
@@ -2077,6 +2182,9 @@ button {
   text-align: center;
   text-shadow: none;
   line-height: 1.5;
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
 }
 
 .report-photos {
@@ -2086,12 +2194,16 @@ button {
   align-items: start;
 }
 
+.empty-report-photos {
+  display: block;
+}
+
 .report-photo {
   position: relative;
   height: 160px;
   border: 2px solid #ddd;
   border-radius: 8px;
-  background: url("./assets/checkin-pet.jpeg") center / cover no-repeat;
+  background: url("./assets/photo-dog-black.webp") center / cover no-repeat;
   overflow: hidden;
 }
 
@@ -2281,20 +2393,74 @@ button {
 }
 
 @media (max-height: 760px) {
-  .detail-grid,
-  .pet-data-grid {
-    height: auto;
-  }
-
-  .detail-grid,
-  .detail-grid > aside,
-  .content-stack {
-    overflow: visible;
-    max-height: none;
-  }
-
   .waiting-list-panel,
   .pet-search-results {
     max-height: none;
+  }
+}
+
+.main-detail {
+  overflow: hidden;
+}
+
+.main-detail .detail-grid {
+  grid-template-columns: minmax(300px, 368px) minmax(0, 1fr);
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.main-detail .detail-grid > aside {
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 28px;
+}
+
+.main-detail .content-stack {
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 900px) {
+  .main-detail {
+    overflow-y: auto;
+  }
+
+  .main-detail .detail-grid {
+    grid-template-columns: 1fr;
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .main-detail .detail-grid > aside,
+  .main-detail .content-stack {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .main-detail {
+    overflow: hidden;
+  }
+
+  .main-detail .detail-grid {
+    grid-template-columns: minmax(300px, 368px) minmax(0, 1fr);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .main-detail .detail-grid > aside,
+  .main-detail .content-stack {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }
