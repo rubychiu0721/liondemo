@@ -480,7 +480,7 @@ function petDetailScreen() {
       </div>
     </div>
     ${petDetailContent()}
-  `, "pets");
+  `, "pets", "detail");
 }
 
 function petDetailContent() {
@@ -630,7 +630,7 @@ function detailScreen(status = state.detailStatus) {
       </div>
     </div>
     ${status === "report" ? reportContent() : detailContent(status)}
-  `, status === "waiting" ? "waiting" : "pets");
+  `, status === "waiting" ? "waiting" : "pets", status === "report" ? "report" : "detail");
 }
 
 function detailActions(status) {
