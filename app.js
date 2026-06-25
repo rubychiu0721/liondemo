@@ -128,7 +128,7 @@ function icon(name) {
   return icons[name] || name;
 }
 
-function shell(content, active = "schedule") {
+function shell(content, active = "schedule", layout = active) {
   return `
     <div class="app-shell">
       <aside class="side-nav">
@@ -137,7 +137,7 @@ function shell(content, active = "schedule") {
         ${navItem("waiting", "待確認", "✓", active === "waiting", "9+")}
         ${navItem("pets", "寵物資料", "▦", active === "pets")}
       </aside>
-      <main class="main main-${active}">${content}</main>
+      <main class="main main-${layout}">${content}</main>
       ${state.toast ? `<div class="toast"><span>${icon("check")}　${state.toast}</span><button class="icon-btn" data-close-toast>${icon("close")}</button></div>` : ""}
       ${state.modal ? modalTemplate() : ""}
     </div>
@@ -458,9 +458,9 @@ function petRow(name, detail, tag, owner, pet = "", target = "new-service") {
 
 function serviceIcon(kind, tone = "") {
   const srcMap = {
-    small: "./assets/service-small.png",
-    large: "./assets/service-large.png",
-    custom: "./assets/service-custom.png",
+    small: "./assets/service-small.png?v=2",
+    large: "./assets/service-large.png?v=2",
+    custom: "./assets/service-custom.png?v=2",
   };
   const labelMap = {
     small: "小美容",
@@ -529,10 +529,12 @@ function newServiceScreen() {
       <span class="pet-row-owner"><span class="owner-tag">主要</span><span>王小美　0918120635</span></span>
     </div>
     <h2 class="subhead">美容項目</h2>
-    <button class="service-row tone-green" data-service-select="new-time">${serviceIcon("small")}<strong>小美容</strong><span class="price"><span>預估金額</span>$ 950</span></button>
-    <button class="service-row tone-yellow" data-service-select="new-time">${serviceIcon("large")}<strong>大美容</strong><span class="price"><span>預估金額</span>$ 1450</span></button>
-    <button class="service-row tone-purple" data-service-select="new-time">${serviceIcon("custom")}<strong>其他服務</strong><span class="price"><span>預估金額</span>請到店評估</span></button>
-  `, "schedule");
+    <div class="service-scroll">
+      <button class="service-row tone-green" data-service-select="new-time">${serviceIcon("small")}<strong>小美容</strong><span class="price"><span>預估金額</span>$ 950</span></button>
+      <button class="service-row tone-yellow" data-service-select="new-time">${serviceIcon("large")}<strong>大美容</strong><span class="price"><span>預估金額</span>$ 1450</span></button>
+      <button class="service-row tone-purple" data-service-select="new-time">${serviceIcon("custom")}<strong>其他服務</strong><span class="price"><span>預估金額</span>請到店評估</span></button>
+    </div>
+  `, "schedule", "new-service");
 }
 
 function newTimeScreen() {
@@ -545,7 +547,7 @@ function newTimeScreen() {
   return shell(`
     ${simpleHead("選擇時間")}
     <div class="booking-layout">
-      <section class="panel schedule-panel" style="height:712px; min-height:0;">
+      <section class="panel schedule-panel">
         <div class="schedule-head">
           <h2 class="section-title">${icon("calendar")} 2026/04/16(四)</h2>
           <button class="outline-btn" data-drawer>${icon("list")} 候補名單(3)</button>
@@ -559,9 +561,9 @@ function newTimeScreen() {
         </div>
         <button class="primary-btn confirm-wide" data-confirm-booking>確定 ${icon("check")}</button>
       </aside>
+      ${state.drawer ? waitDrawer() : ""}
     </div>
-    ${state.drawer ? waitDrawer() : ""}
-  `, "schedule");
+  `, "schedule", "new-time");
 }
 
 function calendar() {

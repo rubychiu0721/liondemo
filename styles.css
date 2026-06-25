@@ -151,6 +151,67 @@ button {
   overflow: hidden;
 }
 
+.main-new-service {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-new-time {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-new-time > .page-head {
+  flex: 0 0 auto;
+}
+
+.main-new-time > .booking-layout {
+  flex: 1;
+  min-height: 0;
+}
+
+.main-new-time .schedule-panel {
+  height: auto;
+  min-height: 0;
+}
+
+.main-new-time .booking-layout > aside {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 2px 24px;
+}
+
+.main-new-time .confirm-wide {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  box-shadow: 0 -10px 18px rgba(235, 242, 253, 0.85);
+}
+
+.main-new-service > .page-head,
+.main-new-service > .subhead,
+.main-new-service > .pet-row {
+  flex: 0 0 auto;
+}
+
+.main-new-service > .subhead {
+  margin: 22px 0 16px;
+}
+
+.service-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 4px 24px;
+}
+
 .topbar {
   display: grid;
   grid-template-columns: minmax(360px, 1fr) auto;
@@ -1219,9 +1280,22 @@ button {
 }
 
 .booking-layout {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 368px;
   gap: 24px;
+}
+
+.booking-layout > .drawer {
+  position: absolute;
+  top: 0;
+  right: 392px;
+  z-index: 30;
+  width: 368px;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(25, 45, 80, 0.18);
 }
 
 .calendar-card,
@@ -1578,6 +1652,12 @@ button {
   gap: 0;
   color: #777;
   font-size: 18px;
+}
+
+.history-row .service-icon {
+  width: 60px;
+  height: 60px;
+  background: transparent;
 }
 
 .history-row strong,
