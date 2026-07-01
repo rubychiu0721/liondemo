@@ -1,4 +1,4 @@
-const CACHE_NAME = "jingsuanshi-prototype-v1";
+const CACHE_NAME = "jingsuanshi-prototype-v2";
 
 const ASSETS = [
   "./",

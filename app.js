@@ -157,7 +157,9 @@ function shell(content, active = "schedule", layout = active) {
   return `
     <div class="app-shell">
       <aside class="side-nav">
-        <button class="brand-dot" data-screen="schedule">精算獅</button>
+        <button class="brand-dot" data-screen="schedule" aria-label="回到預約清單">
+          <img src="./assets/app-logo.png" alt="精算獅" />
+        </button>
         ${navItem("schedule", "預約清單", "☰", active === "schedule")}
         ${navItem("waiting", "待確認", "✓", active === "waiting", "9+")}
         ${navItem("pets", "寵物資料", "▦", active === "pets")}
@@ -855,7 +857,7 @@ function ownerRow(en, name, phone, tag, trash = false) {
     <div class="owner-row">
       <span class="owner-photo"></span>
       <span><span class="owner-tag ${tag === "次要" ? "secondary" : ""}">${tag}</span><br><strong>${en}</strong><br>${name}<br><span style="color:#888">${phone}</span></span>
-      <span>${trash ? icon("trash") : ""}</span>
+      <span class="owner-action">${trash ? `<button class="owner-delete" aria-label="刪除照護人"><img src="./assets/trash-icon.png" alt="" /></button>` : ""}</span>
     </div>
   `;
 }
