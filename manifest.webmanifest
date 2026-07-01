@@ -1,0 +1,25 @@
+{
+  "name": "精算獅 寵物美容智慧產能預約系統 Prototype",
+  "short_name": "精算獅",
+  "description": "寵物美容預約平板 Prototype",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#eaf1fb",
+  "theme_color": "#eaf1fb",
+  "icons": [
+    {
+      "src": "./assets/pwa-icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/pwa-icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

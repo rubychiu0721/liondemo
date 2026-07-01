@@ -1,5 +1,11 @@
 const app = document.querySelector("#app");
 
+if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  });
+}
+
 function syncViewportHeight() {
   const height = window.visualViewport?.height || window.innerHeight;
   document.documentElement.style.setProperty("--app-height", `${height}px`);
@@ -907,8 +913,9 @@ function contractInfo(status) {
 }
 
 function contractRow(title, sub, on) {
-  const openAttr = title === "主合約" ? "data-contract-open" : "";
-  return `<div class="contract-row"><span class="check-circle ${on ? "" : "off"}">${icon("check")}</span><span><strong>${title}</strong><br><span style="color:#888">${sub}</span></span><button class="arrow-square" ${openAttr}>›</button></div>`;
+  const isMainContract = title === "主合約";
+  const openAttr = isMainContract ? ' data-contract-open role="button" tabindex="0" aria-label="查看主合約"' : "";
+  return `<div class="contract-row ${isMainContract ? "is-clickable" : ""}"${openAttr}><span class="check-circle ${on ? "" : "off"}">${icon("check")}</span><span><strong>${title}</strong><br><span style="color:#888">${sub}</span></span><button class="arrow-square" type="button" aria-label="${isMainContract ? "查看主合約" : "查看合約"}">›</button></div>`;
 }
 
 function quoteInfo(status) {
@@ -1061,7 +1068,7 @@ function render() {
 }
 
 document.addEventListener("click", (event) => {
-  const target = event.target.closest("button, a, [data-waiting-select]");
+  const target = event.target.closest("button, a, [data-waiting-select], [data-contract-open]");
   if (!target) return;
   const screen = target.dataset.screen || target.dataset.nav;
   const detail = target.dataset.detail;
@@ -1111,7 +1118,8 @@ document.addEventListener("click", (event) => {
   if (target.dataset.petTab) {
     setState({ petTab: target.dataset.petTab });
   }
-  if (target.dataset.contractOpen !== undefined) {
+  const contractOpenTarget = target.closest?.("[data-contract-open]");
+  if (contractOpenTarget) {
     event.preventDefault();
     setState({ screen: "contract-flow", contractStep: 1, petTab: "contract", contractBack: state.screen === "detail" ? "detail" : "pet-detail", drawer: false, modal: null });
   }
